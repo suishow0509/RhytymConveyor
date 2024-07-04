@@ -21,12 +21,18 @@ public class RhythmMaterialSource : BeltConveyor
     [Header("シーンマネージャ")]
     [SerializeField] private RhythmSceneManager m_sceneManager = null;
 
+	private void Awake()
+	{
+		ConveyorBegin = transform.position;
+		ConveyorEnd = transform.position;
+		// 次のベルトコンベアがある
+		if (ToConveyor)
+		{
+			// 次のベルトコンベアの始点を設定する
+			ConveyorEnd = ToConveyor.ConveyorBegin;
+		}
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	}
 
     // Update is called once per frame
     void Update()
@@ -43,7 +49,9 @@ public class RhythmMaterialSource : BeltConveyor
     {
         // 生成
         RhythmMaterial rhythm = Instantiate(m_rhythmMaterial, ToConveyor.transform.position, Quaternion.identity);
+        // シーンマネージャの設定
+        rhythm.SceneManager = m_sceneManager;
         // コンベアの設定
-        rhythm.CurrentBeltConveyor = ToConveyor;
+        rhythm.CurrentBeltConveyor = this;
     }
 }

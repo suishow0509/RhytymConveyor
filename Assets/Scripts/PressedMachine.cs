@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PressedMachine : MonoBehaviour
+public class PressedMachine : BeltConveyor
 {
     [Header("ê›íËÉLÅ[")]
     [SerializeField] private KeyCode m_keyCode = KeyCode.Space;
