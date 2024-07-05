@@ -17,9 +17,6 @@ public class RhythmMaterial : MonoBehaviour
     [Header("シーンマネージャ")]
     [SerializeField] private RhythmSceneManager m_sceneManager = null;
 
-    [Header("判定タイミング(ms)")]
-    [SerializeField] private float m_timing;
-
     [Header("現在乗っているベルトコンベア")]
     [SerializeField] private BeltConveyor m_currentBeltConveyor = null;
 
@@ -42,24 +39,24 @@ public class RhythmMaterial : MonoBehaviour
         // タイマー加算
         m_timer += Time.deltaTime;
 
-        // ベルトコンベアの始点
-        Vector2 conveyorBegin = m_currentBeltConveyor.ConveyorBegin;
-        // ベルトコンベアの終点
-        Vector2 conveyorEnd = m_currentBeltConveyor.ConveyorEnd;
-        // ベルトコンベアの制御点
-        Vector2 conveyorControl = m_currentBeltConveyor.ControlPoint;
-        // 時間
-        float t = (m_timer - m_currentBeltConveyor.GetCurrentLocationTime()) / m_currentBeltConveyor.GetBeltPassTime();
+        //// ベルトコンベアの始点
+        //Vector2 conveyorBegin = m_currentBeltConveyor.ConveyorBegin;
+        //// ベルトコンベアの終点
+        //Vector2 conveyorEnd = m_currentBeltConveyor.ConveyorEnd;
+        //// ベルトコンベアの制御点
+        //Vector2 conveyorControl = m_currentBeltConveyor.ControlPoint;
+        //// 時間
+        //float t = (m_timer - m_currentBeltConveyor.GetCurrentLocationTime()) / m_currentBeltConveyor.GetBeltPassTime();
 
-        // 時間が 1 以上
-        if (t >= 1.0f)
-        {
-            NextConveyor();
-        }
+        //// 時間が 1 以上
+        //if (t >= 1.0f)
+        //{
+        //    NextConveyor();
+        //}
 
-        // 座標
-        Vector2 pos = MyFunction.GetPointOnBezierCurve(conveyorBegin, conveyorEnd, conveyorControl, t);
-        transform.position = pos;
+        //// 座標
+        //Vector2 pos = MyFunction.GetPointOnBezierCurve(conveyorBegin, conveyorEnd, conveyorControl, t);
+        //transform.position = pos;
 
     }
 
@@ -75,7 +72,11 @@ public class RhythmMaterial : MonoBehaviour
     {
         set { m_currentBeltConveyor = value; }
     }
-
+    // タイマー
+    public float Timer
+    {
+        get { return m_timer; } 
+    }
 
 
     private void NextConveyor()

@@ -17,10 +17,16 @@ public class MyFunction
 		return bezierPoint;
 	}
 
-	//// Rayの交差地点
-	//static public Vector2 IntersectionRay(Ray2D ray1, Ray2D ray2)
-	//{
-	//	// 
-	//}
+	// Rayの交差地点
+	static public Vector2 IntersectionRay(Ray2D ray1, Ray2D ray2)
+	{
+		// ray2 と ray1の始点の最短座標
+		Vector2 verticalPoint = ray2.origin + (ray2.direction * Vector2.Dot(ray1.origin - ray2.origin, ray2.direction));
+
+		// ray の内積
+		float dot = Vector2.Dot(ray1.direction, ray2.direction);
+
+		return verticalPoint + (-ray2.direction * dot);
+	}
 
 }

@@ -170,9 +170,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_lineRenderer: {fileID: 428823551}
   m_beltDivision: 5
-  m_conveyorSpeed: 2
+  m_conveyorSpeed: 5
   m_conveyorBegin: {x: 0, y: -10}
-  m_conveyorEnd: {x: 4, y: -10}
+  m_conveyorEnd: {x: 1, y: -1.5}
+  m_conveyorVectorEnd: {x: 0, y: -1}
   m_fromConveyor: {fileID: 1577276936}
   m_toConveyor: {fileID: 0}
 --- !u!120 &428823551
@@ -221,7 +222,7 @@ LineRenderer:
   - {x: 0, y: -2, z: 0}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -269,7 +270,7 @@ LineRenderer:
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
-    textureMode: 0
+    textureMode: 1
     shadowBias: 0.5
     generateLightingData: 0
   m_UseWorldSpace: 1
@@ -453,9 +454,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_lineRenderer: {fileID: 1577276937}
   m_beltDivision: 5
-  m_conveyorSpeed: 2
+  m_conveyorSpeed: 5
   m_conveyorBegin: {x: 0, y: -0.5}
-  m_conveyorEnd: {x: 0, y: -10}
+  m_conveyorEnd: {x: 0.5, y: -1}
+  m_conveyorVectorEnd: {x: 1, y: 0}
   m_fromConveyor: {fileID: 1742930964}
   m_toConveyor: {fileID: 428823550}
 --- !u!120 &1577276937
@@ -502,14 +504,15 @@ LineRenderer:
   m_Positions:
   - {x: 0, y: -0.5, z: 0}
   - {x: 0, y: -2, z: 0}
+  - {x: 0, y: -2, z: 0}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 1
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.03794098
+        time: 0
         value: 1
         inSlope: 0
         outSlope: 0
@@ -552,7 +555,7 @@ LineRenderer:
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
-    textureMode: 0
+    textureMode: 1
     shadowBias: 0.5
     generateLightingData: 0
   m_UseWorldSpace: 1
@@ -592,6 +595,7 @@ MonoBehaviour:
   m_conveyorSpeed: 1
   m_conveyorBegin: {x: 0, y: 0}
   m_conveyorEnd: {x: 0, y: 0}
+  m_conveyorVectorEnd: {x: 0, y: -1}
   m_fromConveyor: {fileID: 0}
   m_toConveyor: {fileID: 1577276936}
   m_timings: []
@@ -637,7 +641,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.7000003, g: 0, b: 1, a: 1}
   m_FlipX: 0

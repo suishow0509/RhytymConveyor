@@ -30,8 +30,9 @@ public class RhythmMaterialSource : BeltConveyor
 		{
 			// 次のベルトコンベアの始点を設定する
 			ConveyorEnd = ToConveyor.ConveyorBegin;
+            // スピードを次のベルトコンベアに合わせる
+            ConveyorSpeed = ToConveyor.ConveyorSpeed;
 		}
-
 	}
 
     // Update is called once per frame
@@ -41,17 +42,19 @@ public class RhythmMaterialSource : BeltConveyor
         {
             PopMaterial();
         }
+		MoveMaterials();
 
-    }
+	}
 
-    // ノーツ発生
-    public void PopMaterial()
+	// ノーツ発生
+	public void PopMaterial()
     {
         // 生成
-        RhythmMaterial rhythm = Instantiate(m_rhythmMaterial, ToConveyor.transform.position, Quaternion.identity);
+        RhythmMaterial rhythm = Instantiate(m_rhythmMaterial, ConveyorBegin, Quaternion.identity);
         // シーンマネージャの設定
         rhythm.SceneManager = m_sceneManager;
-        // コンベアの設定
-        rhythm.CurrentBeltConveyor = this;
+        //// コンベアの設定
+        //rhythm.CurrentBeltConveyor = this;
+        AddMaterial(rhythm);
     }
 }
