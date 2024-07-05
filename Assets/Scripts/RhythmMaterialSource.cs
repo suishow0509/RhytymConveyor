@@ -11,7 +11,9 @@ public class RhythmMaterialSource : BeltConveyor
         public float step;      // ノーツの音程
     }
 
-    [Header("発生間隔")]
+	[Header("----- マテリアル発生 -----")]
+
+	[Header("発生間隔")]
     [SerializeField] private MaterialTiming[] m_timings = null;
 
     [Header("ノーツ")]

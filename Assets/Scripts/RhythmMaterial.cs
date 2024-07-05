@@ -27,37 +27,18 @@ public class RhythmMaterial : MonoBehaviour
     private float m_timer = 0.0f;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+	private void Update()
+	{
         // タイマー加算
         m_timer += Time.deltaTime;
+	}
 
-        //// ベルトコンベアの始点
-        //Vector2 conveyorBegin = m_currentBeltConveyor.ConveyorBegin;
-        //// ベルトコンベアの終点
-        //Vector2 conveyorEnd = m_currentBeltConveyor.ConveyorEnd;
-        //// ベルトコンベアの制御点
-        //Vector2 conveyorControl = m_currentBeltConveyor.ControlPoint;
-        //// 時間
-        //float t = (m_timer - m_currentBeltConveyor.GetCurrentLocationTime()) / m_currentBeltConveyor.GetBeltPassTime();
-
-        //// 時間が 1 以上
-        //if (t >= 1.0f)
-        //{
-        //    NextConveyor();
-        //}
-
-        //// 座標
-        //Vector2 pos = MyFunction.GetPointOnBezierCurve(conveyorBegin, conveyorEnd, conveyorControl, t);
-        //transform.position = pos;
-
+	// スコア取得
+	public int GetScore()
+    {
+        return 1;
+        return (int)m_materialState;
     }
 
 
@@ -79,15 +60,5 @@ public class RhythmMaterial : MonoBehaviour
     }
 
 
-    private void NextConveyor()
-    {
-        // 次のベルトコンベアがない
-        if (m_currentBeltConveyor.ToConveyor == null)
-            return;
-
-        // 次のベルトコンベアを設定する
-        m_currentBeltConveyor = m_currentBeltConveyor.ToConveyor;
-
-    }
 
 }

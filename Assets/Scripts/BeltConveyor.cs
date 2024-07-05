@@ -39,7 +39,10 @@ public class BeltConveyor : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        if (FromConveyor)
+        // 取り合えず中点を制御点にしておく
+		m_controlPoint = Vector2.Lerp(m_conveyorBegin, m_conveyorEnd, 0.5f);
+
+		if (FromConveyor && ToConveyor)
         {
             // 始点の設定
             ConveyorBegin = FromConveyor.ConveyorEnd;
@@ -61,6 +64,7 @@ public class BeltConveyor : MonoBehaviour
         MoveMaterials();
 	}
 
+    // ****************************** ベルトコンベアの処理 ****************************** //
 	// ベルトコンベアの頂点生成
 	public void BakeBeltConveyor()
 	{
@@ -149,12 +153,24 @@ public class BeltConveyor : MonoBehaviour
         return (m_conveyorEnd - previous).normalized;
     }
 
-    // ノーツの追加
-    public void AddMaterial(RhythmMaterial material)
+	// ****************************** ノーツの処理 ****************************** //
+	// ノーツの追加
+	public void AddMaterial(RhythmMaterial material)
     {
         m_materials.Add(material);
     }
-    // ノーツの移動
+    // ノーツ削除
+    public void RemoveMaterial(RhythmMaterial material)
+    {
+        m_materials.Remove(material);
+    }
+    // ノーツの破棄
+    public void DestroyMaterial(RhythmMaterial material)
+    {
+        m_materials.Remove(material);
+		Destroy(material.gameObject);
+	}
+	// ノーツの移動
 	public void MoveMaterials()
 	{
 		// 関数内で要素を削除する可能性があるため末尾から処理
@@ -163,7 +179,12 @@ public class BeltConveyor : MonoBehaviour
 			MoveMaterial(m_materials[i]);
 		}
 	}
-
+    // ノーツの移動割合
+    public float GetMaterialTime(RhythmMaterial material)
+    {
+		// 時間
+		return (material.Timer - GetCurrentLocationTime()) / GetBeltPassTime();
+	}
 
 
 	// 輸送速度
@@ -211,14 +232,19 @@ public class BeltConveyor : MonoBehaviour
         set { m_toConveyor = value; }
     }
 
+    // ノーツ
+    public List<RhythmMaterial> RhythmMaterials
+    {
+        get { return m_materials; }
+    }
 
 
 
     // ノーツの移動
-	private void MoveMaterial(RhythmMaterial material)
+    private void MoveMaterial(RhythmMaterial material)
     {
 		// 時間
-		float t = (material.Timer - GetCurrentLocationTime()) / GetBeltPassTime();
+		float t = GetMaterialTime(material);
 
 		// 時間が 1 以上
 		if (t >= 1.0f)
@@ -242,7 +268,7 @@ public class BeltConveyor : MonoBehaviour
         // マテリアルの設定
         ToConveyor.AddMaterial(material);
         // 現在のベルトコンベアから削除
-        m_materials.Remove(material);
+        RemoveMaterial(material);
 
     }
 
