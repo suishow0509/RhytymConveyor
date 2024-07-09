@@ -156,11 +156,16 @@ MonoBehaviour:
   m_lineRenderer: {fileID: 0}
   m_beltDivision: 5
   m_conveyorSpeed: 1
-  m_conveyorBegin: {x: 0, y: 0}
-  m_conveyorEnd: {x: 0, y: 0}
+  m_conveyorBegin:
+    point: {x: 0, y: 0}
+    control: {x: 0, y: -1}
+  m_conveyorEnd:
+    point: {x: 0, y: 0}
+    control: {x: 0, y: 1}
   m_conveyorVectorEnd: {x: 0, y: -1}
   m_fromConveyor: {fileID: 428823550}
   m_toConveyor: {fileID: 0}
+  m_controlObject: {fileID: 0}
   m_materials: []
   m_score: 0
 --- !u!212 &318903318
@@ -223,7 +228,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318903316}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3, y: -4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -278,11 +283,16 @@ MonoBehaviour:
   m_lineRenderer: {fileID: 428823551}
   m_beltDivision: 5
   m_conveyorSpeed: 5
-  m_conveyorBegin: {x: 0, y: -10}
-  m_conveyorEnd: {x: 1, y: -1.5}
+  m_conveyorBegin:
+    point: {x: 0, y: 0}
+    control: {x: 0, y: -1}
+  m_conveyorEnd:
+    point: {x: 0, y: 0}
+    control: {x: 0, y: 1}
   m_conveyorVectorEnd: {x: 0, y: -1}
   m_fromConveyor: {fileID: 1577276936}
   m_toConveyor: {fileID: 318903317}
+  m_controlObject: {fileID: 7583868901365960334, guid: b370cd4b7476896449b57cb28075c8eb, type: 3}
   m_materials: []
 --- !u!120 &428823551
 LineRenderer:
@@ -564,11 +574,16 @@ MonoBehaviour:
   m_lineRenderer: {fileID: 1577276937}
   m_beltDivision: 5
   m_conveyorSpeed: 5
-  m_conveyorBegin: {x: 0, y: -0.5}
-  m_conveyorEnd: {x: 0.5, y: -1}
-  m_conveyorVectorEnd: {x: 1, y: 0}
+  m_conveyorBegin:
+    point: {x: 0, y: 0}
+    control: {x: 0, y: -1}
+  m_conveyorEnd:
+    point: {x: 0, y: -2}
+    control: {x: 0, y: 1}
+  m_conveyorVectorEnd: {x: 0, y: 1}
   m_fromConveyor: {fileID: 1742930964}
   m_toConveyor: {fileID: 428823550}
+  m_controlObject: {fileID: 7583868901365960334, guid: b370cd4b7476896449b57cb28075c8eb, type: 3}
   m_materials: []
 --- !u!120 &1577276937
 LineRenderer:
@@ -703,11 +718,16 @@ MonoBehaviour:
   m_lineRenderer: {fileID: 0}
   m_beltDivision: 5
   m_conveyorSpeed: 1
-  m_conveyorBegin: {x: 0, y: 0}
-  m_conveyorEnd: {x: 0, y: 0}
+  m_conveyorBegin:
+    point: {x: 0, y: 0}
+    control: {x: 0, y: -1}
+  m_conveyorEnd:
+    point: {x: 0, y: 0.5}
+    control: {x: 0, y: 1}
   m_conveyorVectorEnd: {x: 0, y: -1}
   m_fromConveyor: {fileID: 0}
   m_toConveyor: {fileID: 1577276936}
+  m_controlObject: {fileID: 0}
   m_materials: []
   m_timings: []
   m_rhythmMaterial: {fileID: 1189177700659447908, guid: ef71a23781ef6f94c8f2b3711a2e6ec7, type: 3}

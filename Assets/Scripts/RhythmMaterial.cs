@@ -14,12 +14,6 @@ public class RhythmMaterial : MonoBehaviour
         CRITICAL_PRESSED,   // 完璧
     }
 
-    [Header("シーンマネージャ")]
-    [SerializeField] private RhythmSceneManager m_sceneManager = null;
-
-    [Header("現在乗っているベルトコンベア")]
-    [SerializeField] private BeltConveyor m_currentBeltConveyor = null;
-
     [Header("ノーツの状態")]
     [SerializeField] private MaterialState m_materialState = MaterialState.PASS;
 
@@ -43,16 +37,6 @@ public class RhythmMaterial : MonoBehaviour
 
 
 
-    // シーンマネージャ
-    public RhythmSceneManager SceneManager
-    {
-        set { m_sceneManager = value; }
-    }
-    // 現在のベルトコンベア
-    public BeltConveyor CurrentBeltConveyor
-    {
-        set { m_currentBeltConveyor = value; }
-    }
     // タイマー
     public float Timer
     {

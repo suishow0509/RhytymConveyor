@@ -17,21 +17,24 @@ public class BeltConveyor : MonoBehaviour
     [SerializeField] private float m_conveyorSpeed = 1.0f;
 
     [Header("ベルトコンベアの始点と終点")]
-    [SerializeField] private Vector2 m_conveyorBegin = Vector2.zero;
-    [SerializeField] private Vector2 m_conveyorEnd = Vector2.zero;
+    [SerializeField] private MyFunction.BezierEdge m_conveyorBegin;
+    [SerializeField] private MyFunction.BezierEdge m_conveyorEnd;
     [Header("端のベクトル")]
     [SerializeField] private Vector2 m_conveyorVectorEnd = Vector2.down;
     // ベルトコンベアの長さ
     private float m_conveyorLength = 1.0f;
-    // ベジェ曲線の制御点
-    private Vector2 m_controlPoint = Vector2.zero;
+    //// ベジェ曲線の制御点
+    //private Vector2 m_controlPoint = Vector2.zero;
 
 	[Header("入ってくる元のベルトコンベア")]
 	[SerializeField] private BeltConveyor m_fromConveyor = null;
 	[Header("出ていく先のベルトコンベア")]
 	[SerializeField] private BeltConveyor m_toConveyor = null;
 
-    [Header("ノーツ")]
+    [Header("制御点(確認用)")]
+    [SerializeField] private GameObject m_controlObject = null;
+
+    [Header("----- ノーツ -----")]
     [Header("現在載せているノーツ")]
     [SerializeField] private List<RhythmMaterial> m_materials = new();
 
@@ -39,19 +42,19 @@ public class BeltConveyor : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        // 取り合えず中点を制御点にしておく
-		m_controlPoint = Vector2.Lerp(m_conveyorBegin, m_conveyorEnd, 0.5f);
-
-		if (FromConveyor && ToConveyor)
+        // 前にベルトコンベアがある場合は始点を設定する
+		if (FromConveyor)
         {
             // 始点の設定
-            ConveyorBegin = FromConveyor.ConveyorEnd;
-
-            // 制御点の計算
-			Ray2D ray1 = new(m_conveyorBegin, FromConveyor.ConveyorVectorEnd);
-			Ray2D ray2 = new(m_conveyorEnd, -m_conveyorVectorEnd);
-			m_controlPoint = MyFunction.IntersectionRay(ray1, ray2);
+            ConveyorBeginPoint = FromConveyor.ConveyorEnd.point;
 		}
+
+        // 表示確認
+        if (m_controlObject)
+        {
+            Instantiate(m_controlObject, m_conveyorBegin.point + m_conveyorBegin.control, Quaternion.identity);
+            Instantiate(m_controlObject, m_conveyorEnd.point + m_conveyorEnd.control, Quaternion.identity);
+        }
 
         // ベルトコンベア生成
         BakeBeltConveyor();
@@ -69,13 +72,13 @@ public class BeltConveyor : MonoBehaviour
 	public void BakeBeltConveyor()
 	{
 		// ベルトコンベアの長さをマンハッタン距離で求める
-		m_conveyorLength = Mathf.Abs(m_conveyorBegin.x - m_conveyorEnd.x) + Mathf.Abs(m_conveyorBegin.y - m_conveyorEnd.y);
+		m_conveyorLength = Mathf.Abs(m_conveyorBegin.point.x - m_conveyorEnd.point.x) + Mathf.Abs(m_conveyorBegin.point.y - m_conveyorEnd.point.y);
 
 		// 描画の設定
 		if (m_lineRenderer)
 		{
 			// 1つ前の座標
-			Vector2 prePosition = m_conveyorBegin;
+			Vector2 prePosition = m_conveyorBegin.point;
 			// トータルの分割数
 			int division = m_beltDivision * (int)m_conveyorLength;
 			// 頂点数の設定
@@ -85,7 +88,7 @@ public class BeltConveyor : MonoBehaviour
 				// 割合
 				float t = (float)i / division;
 				// 座標の計算
-				Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, m_controlPoint, t);
+				Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
 
 				// 描画座標設定
 				m_lineRenderer.SetPosition(i, pos);
@@ -126,33 +129,6 @@ public class BeltConveyor : MonoBehaviour
         }
     }
 
-    // 始点側のベクトル
-    public Vector2 GetVectorBegin()
-    {
-        // 始点の次の座標
-        Vector2 next = m_conveyorEnd;
-
-        if (m_lineRenderer)
-        {
-            next = m_lineRenderer.GetPosition(1);
-        }
-
-        return (m_conveyorBegin - next).normalized;
-    }
-    // 終点側のベクトル
-    public Vector2 GetVectorEnd()
-    {
-        // 終点の前の座標
-        Vector2 previous = m_conveyorBegin;
-
-        if (m_lineRenderer)
-        {
-            previous = m_lineRenderer.GetPosition(m_lineRenderer.positionCount - 2);
-        }
-
-        return (m_conveyorEnd - previous).normalized;
-    }
-
 	// ****************************** ノーツの処理 ****************************** //
 	// ノーツの追加
 	public void AddMaterial(RhythmMaterial material)
@@ -182,6 +158,13 @@ public class BeltConveyor : MonoBehaviour
     // ノーツの移動割合
     public float GetMaterialTime(RhythmMaterial material)
     {
+        // 通過時間
+        float passTime = GetBeltPassTime();
+        // 通過時間が 0 の場合はゼロ除算になるため処理しない
+        if (passTime <= 0.0f)
+        {
+            return 0.0f;
+        }
 		// 時間
 		return (material.Timer - GetCurrentLocationTime()) / GetBeltPassTime();
 	}
@@ -195,16 +178,24 @@ public class BeltConveyor : MonoBehaviour
 	}
 
 	// 始点
-	public Vector2 ConveyorBegin
+	public MyFunction.BezierEdge ConveyorBegin
     {
         get { return m_conveyorBegin; }
         set { m_conveyorBegin = value; }
     }
+    public Vector2 ConveyorBeginPoint
+    {
+        set { m_conveyorBegin.point = value; }
+    }
     // 終点
-    public Vector2 ConveyorEnd
+    public MyFunction.BezierEdge ConveyorEnd
     {
         get { return m_conveyorEnd; }
         set { m_conveyorEnd = value; }
+    }
+    public Vector2 ConveyorEndPoint
+    {
+        set { m_conveyorEnd.point = value; }
     }
     // 終点側のベクトル
     public Vector2 ConveyorVectorEnd
@@ -213,11 +204,11 @@ public class BeltConveyor : MonoBehaviour
         set { m_conveyorVectorEnd = value;}
     }
 
-    // 制御点
-    public Vector2 ControlPoint
-    {
-        get { return m_controlPoint; }
-    }
+    //// 制御点
+    //public Vector2 ControlPoint
+    //{
+    //    get { return m_controlPoint; }
+    //}
 
     // 元のベルトコンベア
     public BeltConveyor FromConveyor
@@ -253,7 +244,7 @@ public class BeltConveyor : MonoBehaviour
 		}
 
 		// 座標
-		Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, m_controlPoint, t);
+		Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
 		material.transform.position = pos;
 
 	}

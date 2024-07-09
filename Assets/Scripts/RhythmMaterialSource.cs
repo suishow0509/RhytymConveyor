@@ -25,13 +25,15 @@ public class RhythmMaterialSource : BeltConveyor
 
 	private void Awake()
 	{
-		ConveyorBegin = transform.position;
-		ConveyorEnd = transform.position;
+        // ベルトコンベアの始点設定
+		ConveyorBeginPoint = transform.position;
+        // ベルトコンベアの終点設定
+		ConveyorEndPoint = transform.position + (Vector3.down * 0.5f);
 		// 次のベルトコンベアがある
 		if (ToConveyor)
 		{
-			// 次のベルトコンベアの始点を設定する
-			ConveyorEnd = ToConveyor.ConveyorBegin;
+			// 次のベルトコンベアの始点を現在のベルトコンベアの終点に設定する
+			ToConveyor.ConveyorBegin = ConveyorEnd;
             // スピードを次のベルトコンベアに合わせる
             ConveyorSpeed = ToConveyor.ConveyorSpeed;
 		}
@@ -52,11 +54,8 @@ public class RhythmMaterialSource : BeltConveyor
 	public void PopMaterial()
     {
         // 生成
-        RhythmMaterial rhythm = Instantiate(m_rhythmMaterial, ConveyorBegin, Quaternion.identity);
-        // シーンマネージャの設定
-        rhythm.SceneManager = m_sceneManager;
-        //// コンベアの設定
-        //rhythm.CurrentBeltConveyor = this;
+        RhythmMaterial rhythm = Instantiate(m_rhythmMaterial, ConveyorBegin.point, Quaternion.identity);
+        // コンベアの設定
         AddMaterial(rhythm);
     }
 }
