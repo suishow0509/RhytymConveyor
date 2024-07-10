@@ -13,7 +13,7 @@ public class RhythmMaterialAssemble : BeltConveyor
 	private void Awake()
 	{
 		// ベルトコンベアの始点設定
-		ConveyorBeginPoint = transform.position + (Vector3.up * 0.5f);
+		ConveyorBeginPoint = transform.position + (Vector3.up * (transform.localScale.x / 2.0f));
 		// ベルトコンベアの終点設定
 		ConveyorEndPoint = transform.position;
 		if (FromConveyor)

@@ -67,22 +67,7 @@ public class MyFunction
 		return false;
 	}
 
-	// Rayの交差地点
-	static public Vector2 IntersectionRay(Ray2D ray1, Ray2D ray2, float minDistance = 0.1f)
-	{
-		// ray2 と ray1の始点の最短座標
-		Vector2 verticalPoint = ray2.origin + (ray2.direction * Vector2.Dot(ray1.origin - ray2.origin, ray2.direction));
+	// マンハッタン距離
 
-		// ray1の始点 と 垂直点 の距離が 0.1f 以下の場合は中点を返す
-		if (Vector2.Distance(ray1.origin, verticalPoint) <= minDistance)
-		{
-			return Vector2.Lerp(ray1.origin, ray2.origin, 0.5f);
-		}
-
-		// ray の内積
-		float dot = Vector2.Dot(ray1.direction, ray2.direction);
-
-		return verticalPoint + (-ray2.direction * dot);
-	}
 
 }

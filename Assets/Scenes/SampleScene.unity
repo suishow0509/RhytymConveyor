@@ -158,15 +158,19 @@ MonoBehaviour:
   m_conveyorSpeed: 1
   m_conveyorBegin:
     point: {x: 0, y: 0}
-    control: {x: 0, y: -1}
+    control: {x: 0, y: -0.5}
   m_conveyorEnd:
     point: {x: 0, y: 0}
-    control: {x: 0, y: 1}
-  m_conveyorVectorEnd: {x: 0, y: -1}
+    control: {x: 0, y: 0.5}
+  m_conveyorLength: 1
   m_fromConveyor: {fileID: 428823550}
   m_toConveyor: {fileID: 0}
-  m_controlObject: {fileID: 0}
   m_materials: []
+  m_debug: 1
+  m_passTime: 0
+  m_arriveTime: 0
+  m_colorBegin: {r: 0, g: 1, b: 0, a: 1}
+  m_colorEnd: {r: 1, g: 0, b: 0, a: 1}
   m_score: 0
 --- !u!212 &318903318
 SpriteRenderer:
@@ -228,9 +232,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318903316}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3, y: -4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: -5, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1078667081}
   m_RootOrder: 3
@@ -289,11 +293,15 @@ MonoBehaviour:
   m_conveyorEnd:
     point: {x: 0, y: 0}
     control: {x: 0, y: 1}
-  m_conveyorVectorEnd: {x: 0, y: -1}
+  m_conveyorLength: 1
   m_fromConveyor: {fileID: 1577276936}
   m_toConveyor: {fileID: 318903317}
-  m_controlObject: {fileID: 7583868901365960334, guid: b370cd4b7476896449b57cb28075c8eb, type: 3}
   m_materials: []
+  m_debug: 1
+  m_passTime: 0
+  m_arriveTime: 0
+  m_colorBegin: {r: 0, g: 1, b: 0, a: 1}
+  m_colorEnd: {r: 1, g: 0, b: 0, a: 1}
 --- !u!120 &428823551
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -576,15 +584,19 @@ MonoBehaviour:
   m_conveyorSpeed: 5
   m_conveyorBegin:
     point: {x: 0, y: 0}
-    control: {x: 0, y: -1}
+    control: {x: 0, y: -0.5}
   m_conveyorEnd:
     point: {x: 0, y: -2}
-    control: {x: 0, y: 1}
-  m_conveyorVectorEnd: {x: 0, y: 1}
+    control: {x: 0, y: 0.5}
+  m_conveyorLength: 1
   m_fromConveyor: {fileID: 1742930964}
   m_toConveyor: {fileID: 428823550}
-  m_controlObject: {fileID: 7583868901365960334, guid: b370cd4b7476896449b57cb28075c8eb, type: 3}
   m_materials: []
+  m_debug: 1
+  m_passTime: 0
+  m_arriveTime: 0
+  m_colorBegin: {r: 0, g: 1, b: 0, a: 1}
+  m_colorEnd: {r: 1, g: 0, b: 0, a: 1}
 --- !u!120 &1577276937
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -720,15 +732,19 @@ MonoBehaviour:
   m_conveyorSpeed: 1
   m_conveyorBegin:
     point: {x: 0, y: 0}
-    control: {x: 0, y: -1}
+    control: {x: 0, y: -0.5}
   m_conveyorEnd:
-    point: {x: 0, y: 0.5}
-    control: {x: 0, y: 1}
-  m_conveyorVectorEnd: {x: 0, y: -1}
+    point: {x: 0, y: -1}
+    control: {x: 0, y: 0.5}
+  m_conveyorLength: 1
   m_fromConveyor: {fileID: 0}
   m_toConveyor: {fileID: 1577276936}
-  m_controlObject: {fileID: 0}
   m_materials: []
+  m_debug: 1
+  m_passTime: 0
+  m_arriveTime: 0
+  m_colorBegin: {r: 0, g: 1, b: 0, a: 1}
+  m_colorEnd: {r: 1, g: 0, b: 0, a: 1}
   m_timings: []
   m_rhythmMaterial: {fileID: 1189177700659447908, guid: ef71a23781ef6f94c8f2b3711a2e6ec7, type: 3}
   m_sceneManager: {fileID: 1078667080}
@@ -793,8 +809,8 @@ Transform:
   m_GameObject: {fileID: 1742930963}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1078667081}
   m_RootOrder: 0

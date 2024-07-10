@@ -20,12 +20,16 @@ public class RhythmMaterial : MonoBehaviour
     // ノーツ発生からの時間
     private float m_timer = 0.0f;
 
+    Vector3 oldPos = Vector3.zero;
 
 
 	private void Update()
 	{
         // タイマー加算
         m_timer += Time.deltaTime;
+
+        //Debug.Log(Vector3.Distance(transform.position, oldPos));
+        oldPos = transform.position;
 	}
 
 	// スコア取得

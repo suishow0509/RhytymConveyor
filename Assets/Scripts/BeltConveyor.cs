@@ -19,24 +19,28 @@ public class BeltConveyor : MonoBehaviour
     [Header("ベルトコンベアの始点と終点")]
     [SerializeField] private MyFunction.BezierEdge m_conveyorBegin;
     [SerializeField] private MyFunction.BezierEdge m_conveyorEnd;
-    [Header("端のベクトル")]
-    [SerializeField] private Vector2 m_conveyorVectorEnd = Vector2.down;
-    // ベルトコンベアの長さ
-    private float m_conveyorLength = 1.0f;
-    //// ベジェ曲線の制御点
-    //private Vector2 m_controlPoint = Vector2.zero;
+    [Header("ベルトコンベアの長さ")]
+    [SerializeField] private float m_conveyorLength = 1.0f;
 
 	[Header("入ってくる元のベルトコンベア")]
 	[SerializeField] private BeltConveyor m_fromConveyor = null;
 	[Header("出ていく先のベルトコンベア")]
 	[SerializeField] private BeltConveyor m_toConveyor = null;
 
-    [Header("制御点(確認用)")]
-    [SerializeField] private GameObject m_controlObject = null;
-
     [Header("----- ノーツ -----")]
     [Header("現在載せているノーツ")]
     [SerializeField] private List<RhythmMaterial> m_materials = new();
+
+    [Header("デバッグ")]
+    [SerializeField] private bool m_debug = true;
+    [Header("ベルトコンベアの通過時間")]
+    [SerializeField] private float m_passTime;
+    [Header("ベルトコンベアへの到達時間")]
+    [SerializeField] private float m_arriveTime;
+    [Header("識別用の色")]
+    [SerializeField] private Color m_colorBegin = Color.green;
+    [SerializeField] private Color m_colorEnd = Color.red;
+
 
 
 	// Start is called before the first frame update
@@ -49,13 +53,6 @@ public class BeltConveyor : MonoBehaviour
             ConveyorBeginPoint = FromConveyor.ConveyorEnd.point;
 		}
 
-        // 表示確認
-        if (m_controlObject)
-        {
-            Instantiate(m_controlObject, m_conveyorBegin.point + m_conveyorBegin.control, Quaternion.identity);
-            Instantiate(m_controlObject, m_conveyorEnd.point + m_conveyorEnd.control, Quaternion.identity);
-        }
-
         // ベルトコンベア生成
         BakeBeltConveyor();
 
@@ -67,7 +64,7 @@ public class BeltConveyor : MonoBehaviour
         MoveMaterials();
 	}
 
-    // ****************************** ベルトコンベアの処理 ****************************** //
+	// ****************************** ベルトコンベアの処理 ****************************** //
 	// ベルトコンベアの頂点生成
 	public void BakeBeltConveyor()
 	{
@@ -83,6 +80,8 @@ public class BeltConveyor : MonoBehaviour
 			int division = m_beltDivision * (int)m_conveyorLength;
 			// 頂点数の設定
 			m_lineRenderer.positionCount = division + 1;
+			// ベルトコンベアの長さ初期化
+			m_conveyorLength = 0;
 			for (int i = 0; i <= division; i++)
 			{
 				// 割合
@@ -149,6 +148,16 @@ public class BeltConveyor : MonoBehaviour
 	// ノーツの移動
 	public void MoveMaterials()
 	{
+		if (m_debug)
+		{
+			// 表示確認
+			Debug.DrawRay(m_conveyorBegin.point, m_conveyorBegin.control, m_colorBegin);
+			Debug.DrawRay(m_conveyorEnd.point, m_conveyorEnd.control, m_colorEnd);
+            // 時間
+			m_passTime = GetBeltPassTime();
+			m_arriveTime = GetCurrentLocationTime();
+		}
+
 		// 関数内で要素を削除する可能性があるため末尾から処理
 		for (int i = m_materials.Count - 1; i >= 0; i--)
 		{
@@ -166,7 +175,7 @@ public class BeltConveyor : MonoBehaviour
             return 0.0f;
         }
 		// 時間
-		return (material.Timer - GetCurrentLocationTime()) / GetBeltPassTime();
+		return (material.Timer - GetCurrentLocationTime()) / passTime;
 	}
 
 
@@ -197,18 +206,6 @@ public class BeltConveyor : MonoBehaviour
     {
         set { m_conveyorEnd.point = value; }
     }
-    // 終点側のベクトル
-    public Vector2 ConveyorVectorEnd
-    {
-        get { return m_conveyorVectorEnd; }
-        set { m_conveyorVectorEnd = value;}
-    }
-
-    //// 制御点
-    //public Vector2 ControlPoint
-    //{
-    //    get { return m_controlPoint; }
-    //}
 
     // 元のベルトコンベア
     public BeltConveyor FromConveyor

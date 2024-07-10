@@ -28,12 +28,12 @@ public class RhythmMaterialSource : BeltConveyor
         // ベルトコンベアの始点設定
 		ConveyorBeginPoint = transform.position;
         // ベルトコンベアの終点設定
-		ConveyorEndPoint = transform.position + (Vector3.down * 0.5f);
+		ConveyorEndPoint = transform.position + (Vector3.down * (transform.localScale.x / 2.0f));
 		// 次のベルトコンベアがある
 		if (ToConveyor)
 		{
 			// 次のベルトコンベアの始点を現在のベルトコンベアの終点に設定する
-			ToConveyor.ConveyorBegin = ConveyorEnd;
+			ToConveyor.ConveyorBeginPoint = ConveyorEnd.point;
             // スピードを次のベルトコンベアに合わせる
             ConveyorSpeed = ToConveyor.ConveyorSpeed;
 		}

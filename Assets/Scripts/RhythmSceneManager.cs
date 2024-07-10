@@ -30,12 +30,12 @@ public class RhythmSceneManager : MonoBehaviour
         // タイマー作動
         m_sceneTimer += Time.deltaTime;
 
-    }
+	}
 
 
 
-    // タイマー
-    public float SceneTimer
+	// タイマー
+	public float SceneTimer
     {
         get { return m_sceneTimer; }
     }
