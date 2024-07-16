@@ -9,6 +9,9 @@ public class RhythmMaterialAssemble : BeltConveyor
 	[Header("スコア")]
 	[SerializeField] private int m_score = 0;
 
+	// リザルト
+	private readonly Dictionary<RhythmMaterial.MaterialState, int> m_result = new();
+
 
 	private void Awake()
 	{
@@ -25,6 +28,11 @@ public class RhythmMaterialAssemble : BeltConveyor
 			FromConveyor.ConveyorEndPoint = ConveyorBegin.point;
 		}
 
+		// リザルト初期化
+		for (RhythmMaterial.MaterialState state = 0; state <= RhythmMaterial.MaterialState.CRITICAL_PRESSED; state++)
+		{
+			m_result[state] = 0;
+		}
 	}
 
 	// Update is called once per frame
@@ -50,8 +58,8 @@ public class RhythmMaterialAssemble : BeltConveyor
 			// レーンの末尾にノーツがある
 			if (GetMaterialTime(RhythmMaterials[i]) >= 1.0f)
 			{
-				// ノーツのスコア加算
-				m_score = RhythmMaterials[i].GetScore();
+				// リザルト加算
+				m_result[RhythmMaterials[i].State]++;
 				// ノーツの破棄
 				DestroyMaterial(RhythmMaterials[i]);
 			}

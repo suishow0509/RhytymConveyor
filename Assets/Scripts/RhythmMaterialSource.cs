@@ -13,9 +13,6 @@ public class RhythmMaterialSource : BeltConveyor
 
 	[Header("----- マテリアル発生 -----")]
 
-	[Header("発生間隔")]
-    [SerializeField] private MaterialTiming[] m_timings = null;
-
     [Header("ノーツ")]
     [SerializeField] private RhythmMaterial m_rhythmMaterial = null;
     private int m_notes = 0;

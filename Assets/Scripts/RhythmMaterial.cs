@@ -8,14 +8,14 @@ public class RhythmMaterial : MonoBehaviour
     [System.Serializable]
     public enum MaterialState
     {
-        PASS,               // 未加工
+        RAW,               // 未加工
         SLIDE,              // かすった
         PRESSED,            // 加工済み
         CRITICAL_PRESSED,   // 完璧
     }
 
     [Header("ノーツの状態")]
-    [SerializeField] private MaterialState m_materialState = MaterialState.PASS;
+    [SerializeField] private MaterialState m_materialState = MaterialState.RAW;
 
     // ノーツ発生からの時間
     private float m_timer = 0.0f;
@@ -32,14 +32,23 @@ public class RhythmMaterial : MonoBehaviour
         oldPos = transform.position;
 	}
 
-	// スコア取得
-	public int GetScore()
+
+    // 状態の設定
+    public void SetState(MaterialState state)
     {
-        return 1;
-        return (int)m_materialState;
+        // より良い状態
+        if (state > m_materialState)
+        {
+            m_materialState = state;
+        }
     }
 
 
+    // ノーツの状態
+    public MaterialState State
+    {
+        get { return m_materialState; }
+    }
 
     // タイマー
     public float Timer

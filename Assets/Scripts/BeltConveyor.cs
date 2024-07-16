@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class BeltConveyor : MonoBehaviour
 {
+    [Header("----- システム -----")]
+    [Header("上書きを許可")]
+    [SerializeField] private bool m_permitOverwrite = true;
+
     [Header("----- 描画 -----")]
     [Header("ラインレンダラー")]
     [SerializeField] private LineRenderer m_lineRenderer = null;
@@ -20,7 +24,9 @@ public class BeltConveyor : MonoBehaviour
     [SerializeField] private MyFunction.BezierEdge m_conveyorBegin;
     [SerializeField] private MyFunction.BezierEdge m_conveyorEnd;
     [Header("ベルトコンベアの長さ")]
-    [SerializeField] private float m_conveyorLength = 1.0f;
+    [SerializeField] private float m_beltLength = 1.0f;
+    [Header("曲線を構成する点")]
+    [SerializeField] private List<Vector3> m_points = new();
 
 	[Header("入ってくる元のベルトコンベア")]
 	[SerializeField] private BeltConveyor m_fromConveyor = null;
@@ -62,6 +68,8 @@ public class BeltConveyor : MonoBehaviour
     void Update()
     {
         MoveMaterials();
+
+        BakeBeltConveyor();
 	}
 
 	// ****************************** ベルトコンベアの処理 ****************************** //
@@ -69,7 +77,7 @@ public class BeltConveyor : MonoBehaviour
 	public void BakeBeltConveyor()
 	{
 		// ベルトコンベアの長さをマンハッタン距離で求める
-		m_conveyorLength = Mathf.Abs(m_conveyorBegin.point.x - m_conveyorEnd.point.x) + Mathf.Abs(m_conveyorBegin.point.y - m_conveyorEnd.point.y);
+		m_beltLength = Mathf.Abs(m_conveyorBegin.point.x - m_conveyorEnd.point.x) + Mathf.Abs(m_conveyorBegin.point.y - m_conveyorEnd.point.y);
 
 		// 描画の設定
 		if (m_lineRenderer)
@@ -77,11 +85,15 @@ public class BeltConveyor : MonoBehaviour
 			// 1つ前の座標
 			Vector2 prePosition = m_conveyorBegin.point;
 			// トータルの分割数
-			int division = m_beltDivision * (int)m_conveyorLength;
+			int division = m_beltDivision * (int)m_beltLength;
 			// 頂点数の設定
 			m_lineRenderer.positionCount = division + 1;
+
 			// ベルトコンベアの長さ初期化
-			m_conveyorLength = 0;
+			m_beltLength = 0;
+            // 点のリスト初期化
+            m_points.Clear();
+
 			for (int i = 0; i <= division; i++)
 			{
 				// 割合
@@ -91,9 +103,10 @@ public class BeltConveyor : MonoBehaviour
 
 				// 描画座標設定
 				m_lineRenderer.SetPosition(i, pos);
+                m_points.Add(pos);
 
 				// 距離を求める
-				m_conveyorLength += Vector2.Distance(prePosition, pos);
+				m_beltLength += Vector2.Distance(prePosition, pos);
 				// 前の座標を設定する
 				prePosition = pos;
 			}
@@ -107,12 +120,12 @@ public class BeltConveyor : MonoBehaviour
         // スピードが 0 以上
         if (m_conveyorSpeed > 0.0f)
         {
-			return m_conveyorLength / m_conveyorSpeed;
+			return m_beltLength / m_conveyorSpeed;
 		}
 		return 0.0f;
     }
 
-    // 現在地までの時間
+    // 現在のベルトコンベアにたどり着くまでの時間
     public float GetCurrentLocationTime()
     {
         // ひとつ前にベルトコンベアがある
@@ -145,6 +158,7 @@ public class BeltConveyor : MonoBehaviour
         m_materials.Remove(material);
 		Destroy(material.gameObject);
 	}
+
 	// ノーツの移動
 	public void MoveMaterials()
 	{
@@ -177,10 +191,47 @@ public class BeltConveyor : MonoBehaviour
 		// 時間
 		return (material.Timer - GetCurrentLocationTime()) / passTime;
 	}
+	// ノーツの移動
+	public virtual void MoveMaterial(RhythmMaterial material)
+	{
+		// 時間
+		float t = GetMaterialTime(material);
+
+		// 時間が 1 以上
+		if (t >= 1.0f)
+		{
+			NextConveyor(material);
+		}
+
+		// 座標
+		Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
+		material.transform.position = pos;
+
+	}
+
+	// マテリアルを次のベルトコンベアに移す
+	public virtual void NextConveyor(RhythmMaterial material)
+	{
+		// 次のベルトコンベアがない
+		if (ToConveyor == null)
+			return;
+
+		// マテリアルの設定
+		ToConveyor.AddMaterial(material);
+		// 現在のベルトコンベアから削除
+		RemoveMaterial(material);
+
+    }
 
 
-	// 輸送速度
-	public float ConveyorSpeed
+    // 上書きを許可
+    public bool PermitOverwrite
+    {
+        get { return m_permitOverwrite; }
+    }
+
+    // 輸送速度
+    public float ConveyorSpeed
 	{
 		get { return m_conveyorSpeed; }
 		set { m_conveyorSpeed = value; }
@@ -227,37 +278,5 @@ public class BeltConveyor : MonoBehaviour
     }
 
 
-
-    // ノーツの移動
-    private void MoveMaterial(RhythmMaterial material)
-    {
-		// 時間
-		float t = GetMaterialTime(material);
-
-		// 時間が 1 以上
-		if (t >= 1.0f)
-		{
-			NextConveyor(material);
-		}
-
-		// 座標
-		Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
-		material.transform.position = pos;
-
-	}
-
-    // マテリアルを次のベルトコンベアに移す
-    private void NextConveyor(RhythmMaterial material)
-    {
-        // 次のベルトコンベアがない
-        if (ToConveyor == null)
-            return;
-
-        // マテリアルの設定
-        ToConveyor.AddMaterial(material);
-        // 現在のベルトコンベアから削除
-        RemoveMaterial(material);
-
-    }
 
 }
