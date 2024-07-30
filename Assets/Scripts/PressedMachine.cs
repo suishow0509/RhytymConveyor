@@ -66,6 +66,10 @@ public class PressedMachine : BeltConveyor
             return;
         }
 
+        // 繋がっているベルトコンベアのノーツ取得
+        List<RhythmMaterial> mat = GetMaterialsConnectingBelt();
+        Debug.Log(mat.Count);
+
         // 現在のレーンに乗っているノーツ取得
         List<RhythmMaterial> materials = RhythmMaterials;
 
@@ -85,7 +89,6 @@ public class PressedMachine : BeltConveyor
                 {
                     // 判定の設定
                     material.SetState(judge.result);
-                    Debug.Log(judge.result);
                     break;
                 }
             }

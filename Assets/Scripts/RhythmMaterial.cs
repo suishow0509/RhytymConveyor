@@ -54,6 +54,7 @@ public class RhythmMaterial : MonoBehaviour
     public float Timer
     {
         get { return m_timer; } 
+        set { m_timer = value; }
     }
 
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BeltConveyor : MonoBehaviour
 {
@@ -158,7 +159,6 @@ public class BeltConveyor : MonoBehaviour
         m_materials.Remove(material);
 		Destroy(material.gameObject);
 	}
-
 	// ノーツの移動
 	public void MoveMaterials()
 	{
@@ -208,7 +208,6 @@ public class BeltConveyor : MonoBehaviour
 		material.transform.position = pos;
 
 	}
-
 	// マテリアルを次のベルトコンベアに移す
 	public virtual void NextConveyor(RhythmMaterial material)
 	{
@@ -222,10 +221,43 @@ public class BeltConveyor : MonoBehaviour
 		RemoveMaterial(material);
 
     }
+    // 繋がっているベルトコンベアのノーツを取得する
+    public List<RhythmMaterial> GetMaterialsConnectingBelt()
+    {
+        return GetPreviousMaterials().Concat(GetBackwardMaterials()).Distinct().ToList();
+    }
+    // 前側のベルトコンベアのノーツ取得
+    public List<RhythmMaterial> GetPreviousMaterials()
+    {
+        // 前方にベルトコンベアがある
+        if (FromConveyor)
+        {
+            return FromConveyor.GetPreviousMaterials().Concat(RhythmMaterials).ToList();
+        }
+        // 一番端
+        else
+        {
+            return RhythmMaterials;
+        }
+    }
+    // 後方のベルトコンベアのノーツ取得
+    public List<RhythmMaterial> GetBackwardMaterials()
+    {
+        // 後方にベルトコンベアがある
+        if (ToConveyor)
+        {
+            return ToConveyor.GetBackwardMaterials().Concat(RhythmMaterials).ToList();
+        }
+        else
+        {
+            return RhythmMaterials;
+        }
+    }
 
 
-    // 上書きを許可
-    public bool PermitOverwrite
+	// ****************************** プロパティ ****************************** //
+	// 上書きを許可
+	public bool PermitOverwrite
     {
         get { return m_permitOverwrite; }
     }
