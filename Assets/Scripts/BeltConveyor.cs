@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using static UnityEditor.PlayerSettings;
 
 public class BeltConveyor : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class BeltConveyor : MonoBehaviour
     [Header("ベルトコンベアの長さ")]
     [SerializeField] private float m_beltLength = 1.0f;
     [Header("曲線を構成する点")]
-    [SerializeField] private List<Vector3> m_points = new();
+    [SerializeField] private Vector3[] m_points = new Vector3[0];
 
 	[Header("入ってくる元のベルトコンベア")]
 	[SerializeField] private BeltConveyor m_fromConveyor = null;
@@ -68,49 +69,49 @@ public class BeltConveyor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // ノーツ移動
         MoveMaterials();
-
-        BakeBeltConveyor();
 	}
 
-	// ****************************** ベルトコンベアの処理 ****************************** //
-	// ベルトコンベアの頂点生成
+    // ****************************** ベルトコンベアの処理 ****************************** //
+    // ベルトコンベアの頂点生成
+    [ContextMenu("BakeBeltConveyor")]
 	public void BakeBeltConveyor()
 	{
 		// ベルトコンベアの長さをマンハッタン距離で求める
 		m_beltLength = Mathf.Abs(m_conveyorBegin.point.x - m_conveyorEnd.point.x) + Mathf.Abs(m_conveyorBegin.point.y - m_conveyorEnd.point.y);
 
+		// 1つ前の座標
+		Vector2 prePosition = m_conveyorBegin.point;
+		// トータルの分割数
+		int division = m_beltDivision * (int)m_beltLength;
+		// ベルトコンベアの長さ初期化
+		m_beltLength = 0;
+        // 点のリスト初期化
+        m_points = new Vector3[division + 1];
+        // 頂点設定
+        for (int i = 0; i <= division; i++)
+        {
+            // 割合
+            float t = (float)i / division;
+            // 座標の計算
+            Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
+            // 座標設定
+            m_points[i] = pos;
+            // ベルトコンベアの長さ加算
+            m_beltLength += Vector2.Distance(prePosition, pos);
+            // 前の座標を設定する
+            prePosition = pos;
+        }
+
 		// 描画の設定
 		if (m_lineRenderer)
 		{
-			// 1つ前の座標
-			Vector2 prePosition = m_conveyorBegin.point;
-			// トータルの分割数
-			int division = m_beltDivision * (int)m_beltLength;
 			// 頂点数の設定
 			m_lineRenderer.positionCount = division + 1;
 
-			// ベルトコンベアの長さ初期化
-			m_beltLength = 0;
-            // 点のリスト初期化
-            m_points.Clear();
-
-			for (int i = 0; i <= division; i++)
-			{
-				// 割合
-				float t = (float)i / division;
-				// 座標の計算
-				Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
-
-				// 描画座標設定
-				m_lineRenderer.SetPosition(i, pos);
-                m_points.Add(pos);
-
-				// 距離を求める
-				m_beltLength += Vector2.Distance(prePosition, pos);
-				// 前の座標を設定する
-				prePosition = pos;
-			}
+			// 描画座標設定
+			m_lineRenderer.SetPositions(m_points);
 		}
 
 	}
@@ -201,13 +202,56 @@ public class BeltConveyor : MonoBehaviour
 		if (t >= 1.0f)
 		{
 			NextConveyor(material);
+            return;
 		}
 
 		// 座標
-		Vector2 pos = MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t);
+		Vector2 pos = GetMaterialPosition(t)/*MyFunction.GetPointOnBezierCurve(m_conveyorBegin, m_conveyorEnd, t)*/;
 		material.transform.position = pos;
 
 	}
+    // ノーツの位置取得
+    public Vector3 GetMaterialPosition(float time)
+    {
+        // 現在の時間に応じたベルトコンベアの長さ計算
+        float length = m_beltLength * time;
+        // 計算用の長さ
+        float l = 0.0f;
+		// 1つ前の座標
+		Vector2 prePosition = m_conveyorBegin.point;
+        // 使用する頂点の添え字を取得
+        int index = 0;
+        // 頂点間の距離
+        float distance = 0.0f;
+		for (int i = 0; i < m_points.Length; i++)
+        {
+			// 座標設定
+			Vector3 pos = m_points[i];
+            // 頂点間の距離
+            distance = Vector2.Distance(prePosition, pos);
+			// 頂点[i]までの長さが現在地の長さ以上
+			if (l + distance >= length)
+            {
+                // ひとつ前が始点として使用したい添え字
+                index = i - 1;
+                break;
+            }
+			// ベルトコンベアの長さ加算
+			l += distance;
+			// 前の座標を設定する
+			prePosition = pos;
+		}
+		// 始点
+		Vector3 begin = m_points[index];
+        // 終点
+        Vector3 end = m_points[index + 1];
+        // 割合計算
+        float t = (length - l) / distance;
+
+        // 位置計算
+        return Vector3.Lerp(begin, end, t);
+
+    }
 	// マテリアルを次のベルトコンベアに移す
 	public virtual void NextConveyor(RhythmMaterial material)
 	{

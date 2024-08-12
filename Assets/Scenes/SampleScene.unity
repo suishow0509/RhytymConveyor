@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -155,7 +156,6 @@ MonoBehaviour:
   m_beatsPerMinute: 120
   m_audioSource: {fileID: 455998869}
   m_audioClip: {fileID: 8300000, guid: 5c3c523c59bfc0a428064a2af8bc9b25, type: 3}
-  m_frameRate: 60
 --- !u!4 &455998868
 Transform:
   m_ObjectHideFlags: 0

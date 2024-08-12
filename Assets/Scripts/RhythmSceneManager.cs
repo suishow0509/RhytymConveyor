@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class RhythmSceneManager : MonoBehaviour
 {
+    [Header("----- サウンド -----")]
     [Header("BPM")]
     [SerializeField] private int m_beatsPerMinute = 60;
     [Header("オーディオソース")]
     [SerializeField] private AudioSource m_audioSource = null;
     [Header("オーディオクリップ")]
     [SerializeField] private AudioClip m_audioClip = null;
+
+    [Header("----- ベルトコンベア -----")]
+    [Header("スピード")]
+    [SerializeField] private float m_conveyorSpeed = 1.0f;
 
 
     //[Header("フレームレート")]
